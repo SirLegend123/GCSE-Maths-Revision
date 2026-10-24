@@ -9,6 +9,13 @@ The first topic is **Exchange rates**, built around knowing when to multiply and
 3. **Spot the slip.** Someone has changed some money: does their answer make sense, and what should they have done?
 4. **Money changer.** Work out the answer on the built-in calculator, at three levels: *Step by step* (easy rates, with every step prompted), *Real rates* (rounding to the penny) and *Exam style* (no prompts, plus "where is it cheaper?" questions). If the calculator answer is what you'd get from the wrong sum, it says so.
 
+The second topic is **Recipes**: changing a recipe for more people or fewer people. It uses one method that always works, shown in a "recipe ladder" on every screen: **find 1 person first** (divide by the number of people in the recipe), **then times** by the new number of people. People are always teal and amounts of food are always orange. The sense check is that more people need more food and fewer people need less. The games are:
+
+1. **More or less?** Will you need more food or less? Then pick the answer that makes sense.
+2. **Find 1 person.** Share the recipe out to find how much 1 person needs.
+3. **Recipe changer.** At three levels: *Step by step* (easy numbers, every step prompted), *Find 1, then times* (harder numbers and decimals) and *Exam style* (no prompts). If the answer is one of the usual slips (stopping at 1 person, forgetting to divide, adding on the extra people), it says so.
+4. **Have I got enough?** Work out what is needed, then decide whether there is enough.
+
 To add a topic, copy `topics/exchange-rates.js` as a starting point, write the new topic's learn pages, help card and games in it, and add a `<script>` line for it in `index.html`. The comment at the top of `app.js` explains how a question and its steps are written.
 
 ## Running it

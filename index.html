@@ -186,6 +186,31 @@ p{margin:0}
 .arrow.l::after{left:-16px; border-right:14px solid currentColor}
 @media (max-width:420px){.bridge{gap:6px} .way .opt{font-size:1.05em} .bank{padding:10px 4px}}
 
+/* the recipe ladder: the recipe, then 1 person, then the new number of people.
+   People are always teal and amounts of food are always orange. */
+.ladder3{display:flex; align-items:stretch; gap:8px}
+.rbox{flex:1 1 0; min-width:0; border-radius:18px; padding:10px 8px; text-align:center; display:flex; flex-direction:column; gap:2px; align-items:center; justify-content:center; background:var(--surface-2); border:3px solid var(--line)}
+.rbox.start{background:var(--teal-soft); border-color:var(--teal)}
+.rbox.one{background:var(--berry-soft); border-color:var(--berry)}
+.rbox.goal{background:var(--warm-soft); border-color:var(--warm)}
+.rbox small{font-size:.72em; font-weight:700; color:var(--ink-soft)}
+.rbox .m{font-size:1.1em}
+.rstep{flex:0 0 auto; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; padding:6px 8px; border-radius:14px; border:3px solid transparent; min-width:76px}
+.rstep .opt{font-size:1.2em; font-weight:800; white-space:nowrap}
+.rstep small{font-size:.7em; font-weight:700; color:var(--ink-soft); text-align:center; line-height:1.25}
+.rstep.on{background:var(--sun); border-color:var(--sun-deep); color:var(--sun-ink)}
+.rstep.on small{color:var(--sun-ink)}
+.rstep.off{opacity:.35}
+.rstep .arrow{width:calc(100% - 18px); min-width:40px}
+@media (max-width:600px){
+  .ladder3{flex-direction:column}
+  .rstep{flex-direction:row; gap:12px; padding:4px 12px; align-self:center}
+  .rstep .arrow{width:5px; min-width:0; height:24px; margin:0 8px 12px}
+  .rstep .arrow.r::after{right:auto; left:50%; top:auto; bottom:-16px; transform:translateX(-50%); border:9px solid transparent; border-top:14px solid currentColor}
+}
+.recipe{display:flex; flex-direction:column; gap:6px; background:var(--surface-2); border:2px dashed var(--line); border-radius:18px; padding:14px 18px; align-self:flex-start}
+.recipe ul{margin:0; padding-left:1.2em}
+
 .steps4{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px; counter-reset:s}
 .steps4 li{display:flex; gap:12px; align-items:flex-start; counter-increment:s}
 .steps4 li::before{content:counter(s); flex:none; width:34px; height:34px; border-radius:50%; background:var(--teal); color:var(--on-accent); font-weight:800; display:grid; place-items:center; font-size:.85em}
@@ -201,6 +226,7 @@ p{margin:0}
 .screen .was{font-size:.85em; color:var(--ink-soft); min-height:1.4em}
 .screen .now{font-size:1.7em; font-weight:800; word-break:break-all; text-align:right}
 .screen .now .unit{color:var(--ink-soft); margin-right:4px}
+.screen .now .unit.after{margin:0 0 0 6px}
 .keys{display:grid; grid-template-columns:repeat(4, 1fr); gap:8px}
 .key{min-height:58px; border-radius:14px; border:2px solid var(--line); background:var(--surface); font-size:1.35em; font-weight:800; cursor:pointer; box-shadow:0 3px 0 var(--line); touch-action:manipulation; -webkit-tap-highlight-color:transparent}
 .key:active{transform:translateY(2px); box-shadow:0 1px 0 var(--line)}
@@ -244,6 +270,7 @@ p{margin:0}
 <!-- The app shell, then one file per topic. To add a topic, add its file here. -->
 <script src="app.js"></script>
 <script src="topics/exchange-rates.js"></script>
+<script src="topics/recipes.js"></script>
 <script>App.start();</script>
 </body>
 </html>

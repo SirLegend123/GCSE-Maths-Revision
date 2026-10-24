@@ -10,7 +10,7 @@
 //     visual(r),                        // optional picture; r = {step, done}
 //     steps: [
 //       { type: "choice", ask, options: [{html}], answer, why },   // why: string or (picked) => string
-//       { type: "number", ask, unit, check(value, info) },         // returns {ok, soft, msg}
+//       { type: "number", ask, unit, after, check(value, info) },  // unit goes before the number (£), after goes after it (g); check returns {ok, soft, msg}
 //     ],
 //     explain }                         // shown once the question is finished
 // A wrong step is never a fail: the student tries again, and the question
@@ -156,7 +156,7 @@ const App = (() => {
     const c = S.round.calc;
     const key = (k, label, cls = "", aria = label) => `<button class="key ${cls}" data-act="key" data-k="${k}" aria-label="${esc(aria)}">${label}</button>`;
     return `<div class="calc">
-      <div class="screen" aria-live="polite"><div class="was">${esc(c.was)}</div><div class="now">${step.unit && !/[×÷+−]/.test(c.expr) ? `<span class="unit">${esc(step.unit)}</span>` : ""}${esc(pretty(c.expr)) || "0"}</div></div>
+      <div class="screen" aria-live="polite"><div class="was">${esc(c.was)}</div><div class="now">${step.unit && !/[×÷+−]/.test(c.expr) ? `<span class="unit">${esc(step.unit)}</span>` : ""}${esc(pretty(c.expr)) || "0"}${step.after && !/[×÷+−]/.test(c.expr) ? `<span class="unit after">${esc(step.after)}</span>` : ""}</div></div>
       <div class="keys">
         ${key("7", "7")}${key("8", "8")}${key("9", "9")}${key("÷", "÷<span>divide</span>", "op", "divide")}
         ${key("4", "4")}${key("5", "5")}${key("6", "6")}${key("×", "×<span>times</span>", "op", "times")}
@@ -345,7 +345,7 @@ const App = (() => {
     if (!c.expr || c.expr === "." || /[×÷+−]$/.test(c.expr)) { r.msg = "Type your answer on the calculator first."; r.msgKind = "tip"; render(); return; }
     const v = Number(c.expr);
     const res = st.check(v, {tries: r.tries, ops: c.ops});
-    if (res.ok) return stepDone(res.summary || `${esc(plain(st.ask))} <span class="m">${esc(st.unit || "")}${esc(c.expr)}</span>`);
+    if (res.ok) return stepDone(res.summary || `${esc(plain(st.ask))} <span class="m">${esc(st.unit || "")}${esc(c.expr)}${esc(st.after || "")}</span>`);
     if (res.soft) { r.msg = res.msg; r.msgKind = "tip"; render(); return; }
     slip(res.msg);
   }
