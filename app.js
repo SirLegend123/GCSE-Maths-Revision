@@ -198,14 +198,27 @@ const App = (() => {
   function nextQuestion(){
     const r = S.round;
     if (r.i + 1 < r.qs.length){ r.i++; resetQuestion(); render(); window.scrollTo(0, 0); readCurrent(true); return; }
-    const first = r.results.filter(x => x === "done").length, n = r.qs.length;
-    r.stars = first / n >= 0.9 ? 3 : first / n >= 0.6 ? 2 : 1;
-    r.first = first;
+    finishRound();
+  }
+  // Skipped questions don't count either way. Stars are out of the questions
+  // answered, and need at least MIN_FOR_STARS of them.
+  const MIN_FOR_STARS = 3;
+  function finishRound(){
+    const r = S.round;
+    r.first = r.results.filter(x => x === "done").length;
+    r.answered = r.results.filter(x => x === "done" || x === "help").length;
+    r.skipped = r.qs.length - r.answered;
+    r.stars = r.answered < MIN_FOR_STARS ? 0 : r.first / r.answered >= 0.9 ? 3 : r.first / r.answered >= 0.6 ? 2 : 1;
     const k = keyOf(r.topic, r.act, r.levelId);
-    r.best = (progress.stars[k] || 0) < r.stars;
-    progress.stars[k] = Math.max(progress.stars[k] || 0, r.stars); saveProgress();
+    r.best = r.stars > 0 && (progress.stars[k] || 0) < r.stars;
+    if (r.stars) { progress.stars[k] = Math.max(progress.stars[k] || 0, r.stars); saveProgress(); }
     S.view = "done"; render(); window.scrollTo(0, 0);
     if (r.stars === 3) confetti();
+  }
+  function skipQuestion(){
+    const r = S.round;
+    if (!r.done) r.results[r.i] = "skip";
+    nextQuestion();
   }
 
   /* ---------- views ---------- */
@@ -258,7 +271,8 @@ const App = (() => {
     <div class="row" style="justify-content:space-between">
       <button class="btn ghost" data-act="slide" data-d="-1" ${S.slide === 0 ? "disabled" : ""}>${I.back} Back</button>
       ${last ? `<button class="btn" data-act="learned">Start practising</button>` : `<button class="btn" data-act="slide" data-d="1">Next page</button>`}
-    </div>`;
+    </div>
+    ${last ? "" : `<button class="btn ghost sm" style="align-self:center" data-act="skiplearn">I've got it: skip to the games</button>`}`;
   }
   function playView(){
     const r = S.round, q = currentQ(), st = q.steps[r.step];
@@ -286,17 +300,24 @@ const App = (() => {
       <div class="qhead"><div><span class="eyebrow">${esc(r.act.title)}${lvName ? " · " + esc(lvName) : ""} · Question ${r.i + 1} of ${r.qs.length}</span><div class="qtext">${q.html}</div></div>${speakBtn(q.say)}</div>
       ${q.visual ? q.visual({step: r.step, done: r.done}) : ""}
       ${body}
+    </div>
+    <div class="row" style="justify-content:center">
+      ${r.done ? "" : `<button class="btn ghost sm" data-act="skip">Skip this question</button>`}
+      <button class="btn ghost sm" data-act="gotit">I've got it: finish this game</button>
     </div>`;
   }
   function doneView(){
-    const r = S.round, n = r.qs.length, t = r.topic;
+    const r = S.round, t = r.topic;
     const ai = t.activities.indexOf(r.act), next = t.activities[ai + 1];
-    const msg = r.stars === 3 ? "Amazing. You really know this." : r.stars === 2 ? "Really good. A bit more practice and it will stick." : "Well done for finishing. Every go makes it easier.";
+    const msg = !r.answered ? "No problem. Pick the next game when you're ready."
+      : !r.stars ? `Answer at least ${MIN_FOR_STARS} questions in a game to earn stars.`
+      : r.stars === 3 ? "Amazing. You really know this." : r.stars === 2 ? "Really good. A bit more practice and it will stick." : "Well done. Every go makes it easier.";
     return `${topBar()}
     <div class="panel finish">
       <div class="stars">${starsHTML(r.stars, 64)}</div>
-      <h1>${r.first} of ${n} right first time</h1>
+      <h1>${r.answered ? `${r.first} of ${r.answered} right first time` : "Moving on"}</h1>
       <p>${msg}</p>
+      ${r.skipped && r.answered ? `<p class="small muted">You skipped ${r.skipped} question${r.skipped === 1 ? "" : "s"}. Skipped questions don't count.</p>` : ""}
       ${r.best ? `<p class="small" style="font-weight:700">New best for this game!</p>` : ""}
       <div class="row" style="justify-content:center">
         <button class="btn" data-act="again">Play again</button>
@@ -379,6 +400,9 @@ const App = (() => {
       case "key": if (calcPress(b.dataset.k)) render(); break;
       case "checknum": checkNumber(); break;
       case "next": nextQuestion(); break;
+      case "skip": skipQuestion(); break;
+      case "gotit": if (!r.done) r.results[r.i] = "skip"; finishRound(); break;
+      case "skiplearn": progress.learned[S.topic.id] = true; saveProgress(); go("topic"); document.querySelector(".acts")?.scrollIntoView(); break;
     }
   });
   document.addEventListener("keydown", e => {
