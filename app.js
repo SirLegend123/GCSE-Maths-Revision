@@ -1,5 +1,5 @@
 "use strict";
-// Sapphire's Maths: the app shell. It draws the screens, reads text aloud,
+// GCSE Maths Revision: the app shell. It draws the screens, reads text aloud,
 // saves progress and settings on this device, and runs rounds of questions.
 // Each topic lives in its own file in topics/ and registers itself with
 // App.topic({...}); see topics/exchange-rates.js for the shape.
@@ -212,7 +212,7 @@ const App = (() => {
   function topBar(){
     const all = topics.reduce((n, t) => n + topicStars(t).got, 0);
     return `<header class="bar">
-      <button class="brand" data-act="home" aria-label="Home"><span class="logo">${I.logo}</span><span>Sapphire's Maths</span></button>
+      <button class="brand" data-act="home" aria-label="Home"><span class="logo">${I.logo}</span><span>GCSE Maths Revision</span></button>
       <span class="chip" title="Stars collected">${I.star("var(--sun)", 18)}<span>${all} star${all === 1 ? "" : "s"}</span></span>
       <button class="iconbtn" data-act="settings" aria-label="Settings" title="Settings">${I.gear}</button>
     </header>`;

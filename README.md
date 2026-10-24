@@ -1,4 +1,4 @@
-# Sapphire's Maths
+# GCSE Maths Revision
 
 A calm maths revision app made for one student who is dyslexic and dyscalculic, with topics added over time. There are no timers and no lost points: a wrong answer gets a short explanation and another try. Each topic has a few short **Learn it** pages with pictures, a **Help card** that can be opened during any question, and a set of games. Every question is broken into small steps, one decision at a time. Everything can be read aloud, and the settings cover background colour, light or dark, text size, wider letter spacing, reading each question aloud by itself, and sounds. Stars are saved on the device.
 
